@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="card p-3 my-3">
+                {{ form_start(journal_entry_form, { 'attr': { 'class': 'd-flex justify-content-between' }}) }}
+                    {{ form_row(journal_entry_form.component) }}
+                    {{ form_row(journal_entry_form.reference) }}
+                    <div class="flex-fill">{{ form_row(journal_entry_form.note) }}</div>
+                {{ form_end(journal_entry_form) }}
+                <div class="row p-3">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Datum - Zeit</th>
+                                <th>Componente</th>
+                                <th>Referenz</th>
+                                <th>Eintrag</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in journal_entries %}
+                                <tr>
+                                    <td>{{ entry.timestamp.format('d.m.y - H:i') }}</td>
+                                    <td>{{ entry.component.name }}</td>
+                                    <td>{{ entry.reference }}</td>
+                                    <td>{{ entry.note }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        $("form :input").each(function(index, elem) {
+            var eId = $(elem).attr("id");
+            var label = null;
+            if (eId && (label = $(elem).parents("form").find("label[for="+eId+"]")).length == 1) {
+                $(elem).attr("placeholder", $(label).html());
+                $(label).remove();
+            }
+        });
+    </script>
+</html>

@@ -28,6 +28,9 @@ class JournalController extends AbstractController
         $journalDateCriteria->where(Criteria::expr()->gt('timestamp', [(new \DateTimeImmutable('now'))->format('Y-m-d')]));
         $journalDateCriteria->andWhere(Criteria::expr()->lt('timestamp', [(new \DateTimeImmutable('now +1 day'))->format('Y-m-d')]));
         $journal = $journalEntryRepository->matching($journalDateCriteria);
-        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal]);
+
+        $env = str_replace('sqlite:///%kernel.project_dir%/var/', '', $_ENV['DATABASE_URL']);
+
+        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal, 'db' => $env]);
     }
 }

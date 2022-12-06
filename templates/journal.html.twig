@@ -9,6 +9,8 @@
     </head>
     <body>
         <div class="container">
+            {% if db == 'prod.db' %}<div class="alert alert-success my-3 text-center">PRODUCTION</div>{% endif %}
+            {% if db == 'dev.db' %}<div class="alert alert-danger my-3 text-center">DEVELOPMENT</div>{% endif %}
             <div class="card p-3 my-3">
                 {{ form_start(journal_entry_form, { 'attr': { 'class': 'd-flex justify-content-between' }}) }}
                     {{ form_row(journal_entry_form.component) }}
@@ -16,10 +18,10 @@
                     <div class="flex-fill">{{ form_row(journal_entry_form.note) }}</div>
                 {{ form_end(journal_entry_form) }}
                 <div class="row p-3">
-                    <table class="table">
+                    <table class="table text-nowrap">
                         <thead>
                             <tr>
-                                <th>Datum - Zeit</th>
+                                <th>Datum - Zeit (Endzeit)</th>
                                 <th>Componente</th>
                                 <th>Referenz</th>
                                 <th>Eintrag</th>
@@ -31,7 +33,7 @@
                                     <td>{{ entry.timestamp.format('d.m.y - H:i') }}</td>
                                     <td>{{ entry.component.name }}</td>
                                     <td>{{ entry.reference }}</td>
-                                    <td>{{ entry.note }}</td>
+                                    <td class="w-100">{{ entry.note }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

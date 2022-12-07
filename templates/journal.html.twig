@@ -9,10 +9,12 @@
     </head>
     <body>
         <div class="container">
-            {% if db == 'prod.db' %}<div class="alert alert-success my-3 text-center">PRODUCTION</div>{% endif %}
-            {% if db == 'dev.db' %}<div class="alert alert-danger my-3 text-center">DEVELOPMENT</div>{% endif %}
+            <div class="alert alert-secondary small text-center"><strong>Startzeit ist optional. Wenn, gesetzt wird die Zeit automatisch berechnet. Die Endzeit ist immer der Zeitstempel zum Zeitpunkt der Eintragung.</strong></div>
+            {% if db == 'prod.db' %}<div class="alert alert-success my-3 text-center small p-1"><strong>PRODUCTION</strong></div>{% endif %}
+            {% if db == 'dev.db' %}<div class="alert alert-danger my-3 text-center small p-1"><strong>DEVELOPMENT</strong></div>{% endif %}
             <div class="card p-3 my-3">
                 {{ form_start(journal_entry_form, { 'attr': { 'class': 'd-flex justify-content-between' }}) }}
+                    {{ form_row(journal_entry_form.optionalStartTime) }}
                     {{ form_row(journal_entry_form.component) }}
                     {{ form_row(journal_entry_form.reference) }}
                     <div class="flex-fill">{{ form_row(journal_entry_form.note) }}</div>
@@ -21,7 +23,10 @@
                     <table class="table text-nowrap">
                         <thead>
                             <tr>
-                                <th>Datum - Zeit (Endzeit)</th>
+                                <th>Datum</th>
+                                <th>Von</th>
+                                <th>Bis</th>
+                                <th>Std</th>
                                 <th>Componente</th>
                                 <th>Referenz</th>
                                 <th>Eintrag</th>
@@ -29,8 +34,12 @@
                         </thead>
                         <tbody>
                             {% for entry in journal_entries %}
+                                {% set difference = date(entry.timestamp).diff(date(entry.optionalStartTime ? entry.optionalStartTime : entry.timestamp)) %}
                                 <tr>
-                                    <td>{{ entry.timestamp.format('d.m.y - H:i') }}</td>
+                                    <td>{{ entry.timestamp.format('d.m.y') }}</td>
+                                    <td>{{ entry.optionalStartTime ? entry.optionalStartTime.format('H:i') : '' }}</td>
+                                    <td>{{ entry.timestamp.format('H:i') }}</td>
+                                    <td>{{ difference.format('%h') }}.{{ (difference.format('%i') / 60 * 10)|round }}</td>
                                     <td>{{ entry.component.name }}</td>
                                     <td>{{ entry.reference }}</td>
                                     <td class="w-100">{{ entry.note }}</td>

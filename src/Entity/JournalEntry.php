@@ -26,6 +26,9 @@ class JournalEntry
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $note = null;
 
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $optionalStartTime = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class JournalEntry
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getOptionalStartTime(): ?\DateTimeInterface
+    {
+        return $this->optionalStartTime;
+    }
+
+    public function setOptionalStartTime(?\DateTimeInterface $optionalStartTime): self
+    {
+        $this->optionalStartTime = $optionalStartTime;
 
         return $this;
     }

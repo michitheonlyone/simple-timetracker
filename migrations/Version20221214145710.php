@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20221205124208 extends AbstractMigration
+final class Version20221214145710 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20221205124208 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE component (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL)');
-        $this->addSql('CREATE TABLE journal_entry (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, component_id INTEGER DEFAULT NULL, timestamp DATETIME NOT NULL, reference VARCHAR(24) DEFAULT NULL, note VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_C8FAAE5AE2ABAFFF FOREIGN KEY (component_id) REFERENCES component (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        $this->addSql('CREATE TABLE journal_entry (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, component_id INTEGER DEFAULT NULL, timestamp DATETIME NOT NULL, starting_time TIME DEFAULT NULL, ending_time TIME DEFAULT NULL, note VARCHAR(255) DEFAULT NULL, CONSTRAINT FK_C8FAAE5AE2ABAFFF FOREIGN KEY (component_id) REFERENCES component (id) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('CREATE INDEX IDX_C8FAAE5AE2ABAFFF ON journal_entry (component_id)');
     }
 

@@ -17,17 +17,17 @@ class JournalEntry
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
 
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $startingTime = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endingTime = null;
+
     #[ORM\ManyToOne(inversedBy: 'journalEntries')]
     private ?Component $component = null;
 
-    #[ORM\Column(length: 24, nullable: true)]
-    private ?string $reference = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $note = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $optionalStartTime = null;
 
     public function getId(): ?int
     {
@@ -46,6 +46,30 @@ class JournalEntry
         return $this;
     }
 
+    public function getStartingTime(): ?\DateTimeInterface
+    {
+        return $this->startingTime;
+    }
+
+    public function setStartingTime(?\DateTimeInterface $startingTime): self
+    {
+        $this->startingTime = $startingTime;
+
+        return $this;
+    }
+
+    public function getEndingTime(): ?\DateTimeInterface
+    {
+        return $this->endingTime;
+    }
+
+    public function setEndingTime(?\DateTimeInterface $endingTime): self
+    {
+        $this->endingTime = $endingTime;
+
+        return $this;
+    }
+
     public function getComponent(): ?Component
     {
         return $this->component;
@@ -58,18 +82,6 @@ class JournalEntry
         return $this;
     }
 
-    public function getReference(): ?string
-    {
-        return $this->reference;
-    }
-
-    public function setReference(?string $reference): self
-    {
-        $this->reference = $reference;
-
-        return $this;
-    }
-
     public function getNote(): ?string
     {
         return $this->note;
@@ -78,18 +90,6 @@ class JournalEntry
     public function setNote(?string $note): self
     {
         $this->note = $note;
-
-        return $this;
-    }
-
-    public function getOptionalStartTime(): ?\DateTimeInterface
-    {
-        return $this->optionalStartTime;
-    }
-
-    public function setOptionalStartTime(?\DateTimeInterface $optionalStartTime): self
-    {
-        $this->optionalStartTime = $optionalStartTime;
 
         return $this;
     }

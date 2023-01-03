@@ -24,10 +24,14 @@ class JournalController extends AbstractController
             return $this->redirectToRoute('journal');
         }
 
-        $journalDateCriteria = new Criteria();
-        $journalDateCriteria->where(Criteria::expr()->gt('timestamp', [(new \DateTimeImmutable('now'))->format('Y-m-d')]));
-        $journalDateCriteria->andWhere(Criteria::expr()->lt('timestamp', [(new \DateTimeImmutable('now +1 day'))->format('Y-m-d')]));
-        $journal = $journalEntryRepository->matching($journalDateCriteria);
+        if ($request->get('all')) {
+            $journal = $journalEntryRepository->findAll();
+        } else {
+            $journalDateCriteria = new Criteria();
+            $journalDateCriteria->where(Criteria::expr()->gt('timestamp', [(new \DateTimeImmutable('now'))->format('Y-m-d')]));
+            $journalDateCriteria->andWhere(Criteria::expr()->lt('timestamp', [(new \DateTimeImmutable('now +1 day'))->format('Y-m-d')]));
+            $journal = $journalEntryRepository->matching($journalDateCriteria);
+        }
 
         $env = str_replace('sqlite:///%kernel.project_dir%/var/', '', $_ENV['DATABASE_URL']);
 

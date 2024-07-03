@@ -23,11 +23,14 @@ class JournalEntry
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endingTime = null;
 
-    #[ORM\ManyToOne(inversedBy: 'journalEntries')]
-    private ?Component $component = null;
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $customer = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $note = null;
+
+    #[ORM\Column]
+    private bool $archived = false;
 
     public function getId(): ?int
     {
@@ -70,16 +73,14 @@ class JournalEntry
         return $this;
     }
 
-    public function getComponent(): ?Component
+    public function setCustomer(?string $customer): void
     {
-        return $this->component;
+        $this->customer = $customer;
     }
 
-    public function setComponent(?Component $component): self
+    public function getCustomer(): ?string
     {
-        $this->component = $component;
-
-        return $this;
+        return $this->customer;
     }
 
     public function getNote(): ?string
@@ -90,6 +91,18 @@ class JournalEntry
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(bool $archived): self
+    {
+        $this->archived = $archived;
 
         return $this;
     }

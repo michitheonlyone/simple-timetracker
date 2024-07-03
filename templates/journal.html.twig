@@ -16,13 +16,18 @@
     </head>
     <body>
         <div class="container">
-            {% if db == 'prod.db' %}<div class="alert alert-success my-3 text-center small p-1"><strong>PRODUCTION</strong></div>{% endif %}
-            {% if db == 'dev.db' %}<div class="alert alert-danger my-3 text-center small p-1"><strong>DEVELOPMENT</strong></div>{% endif %}
+            {% if db == 'prod.db' %}<div class="alert alert-success my-1 text-center small p-1"><strong>PRODUCTION</strong></div>{% endif %}
+            {% if db == 'dev.db' %}<div class="alert alert-danger my-1 text-center small p-1"><strong>DEVELOPMENT</strong></div>{% endif %}
+            <div>
+                <a href="{{ path('journal', {'entries': 'today'}) }}" class="btn btn-outline-success btn-sm">Today</a>
+                <a href="{{ path('journal', {'entries': 'last'}) }}" class="btn btn-outline-primary btn-sm">Latest (Open)</a>
+                <a href="{{ path('journal', {'entries': 'archived'}) }}" class="btn btn-outline-warning btn-sm">All (Archived)</a>
+            </div>
             <div class="card p-3 my-3">
                 {{ form_start(journal_entry_form, { 'attr': { 'class': 'd-flex justify-content-between' }}) }}
                     {{ form_row(journal_entry_form.startingTime) }}
                     {{ form_row(journal_entry_form.endingTime) }}
-                    {{ form_row(journal_entry_form.component) }}
+                    {{ form_row(journal_entry_form.customer) }}
                     <div class="flex-fill">{{ form_row(journal_entry_form.note) }}</div>
                 {{ form_end(journal_entry_form) }}
                 <div class="row p-3">
@@ -33,8 +38,9 @@
                                 <th>Von</th>
                                 <th>Bis</th>
                                 <th>Std</th>
-                                <th>Componente</th>
+                                <th>Kunde/ Projekt</th>
                                 <th>Eintrag</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -46,9 +52,10 @@
                                     <td>{{ entry.startingTime ? entry.startingTime.format('H:i') : '' }}</td>
                                     <td>{{ entry.endingTime ? entry.endingTime.format('H:i') : '' }}</td>
                                     <td>{{ difference.format('%h') }}.{{ (difference.format('%i') / 60 * 10)|round(2)|replace({'.':''}) }}</td>
-                                    <td>{{ entry.component.name }}</td>
+                                    <td>{{ entry.customer }}</td>
                                     <td class="w-100">{{ entry.note }}</td>
-                                    <td><a href="{{ path('entry.edit', {'id': entry.id}) }}" class="btn btn-outline-success btn-sm xsm">EDIT</a></td>
+                                    <td><a href="{{ path('entry.edit', {'id': entry.id}) }}" class="btn btn-outline-warning btn-sm xsm">EDIT</a></td>
+                                    <td><a href="{{ path('entry.archive', {'id': entry.id}) }}" class="btn btn-outline-success btn-sm xsm">&check;</a></td>
                                 </tr>
                             {% endfor %}
                         </tbody>

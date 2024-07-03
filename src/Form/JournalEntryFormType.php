@@ -2,9 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Component;
 use App\Entity\JournalEntry;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -19,8 +17,8 @@ class JournalEntryFormType extends AbstractType
         $builder
             ->add('startingTime', TimeType::class, ['label' => false, 'minutes' => [0,15,30,45]])
             ->add('endingTime', TimeType::class, ['label' => false, 'minutes' => [0,15,30,45]])
-            ->add('component', EntityType::class, ['class' => Component::class, 'choice_label' => 'name'])
-            ->add('note', TextType::class, ['label' => 'Was'])
+            ->add('customer', TextType::class, ['label' => 'Kunde/ Projekt'])
+            ->add('note', TextType::class, ['label' => 'Details'])
             ->add('submit', SubmitType::class)
         ;
     }

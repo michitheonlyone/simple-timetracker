@@ -25,6 +25,9 @@
             </div>
             <div class="card p-3 my-3">
                 {{ form_start(journal_entry_form, { 'action': app.request.requestUri, 'attr': { 'class': 'd-flex justify-content-between' }}) }}
+                    {% if journal_entry_form.timestamp is defined %}
+                        {{ form_row(journal_entry_form.timestamp) }}
+                    {% endif %}
                     {{ form_row(journal_entry_form.startingTime) }}
                     {{ form_row(journal_entry_form.endingTime) }}
                     {{ form_row(journal_entry_form.customer) }}
@@ -34,7 +37,9 @@
                     <table class="table text-nowrap">
                         <thead>
                             <tr>
-                                <th>Datum/ Zeit</th>
+                                {% if current_entries != 'today' %}
+                                    <th>Datum</th>
+                                {% endif %}
                                 <th>Von</th>
                                 <th>Bis</th>
                                 <th>Std</th>
@@ -48,7 +53,9 @@
                             {% for entry in journal_entries %}
                                 {% set difference = date(entry.endingTime).diff(date(entry.startingTime ? entry.startingTime : entry.endingTime)) %}
                                 <tr>
-                                    <td>{{ entry.timestamp.format('d.m.y H:i') }}</td>
+                                    {% if current_entries != 'today' %}
+                                        <td>{{ entry.timestamp.format('d.m.y') }}</td>
+                                    {% endif %}
                                     <td>{{ entry.startingTime ? entry.startingTime.format('H:i') : '' }}</td>
                                     <td>{{ entry.endingTime ? entry.endingTime.format('H:i') : '' }}</td>
                                     <td>{{ difference.format('%h') }}.{{ (difference.format('%i') / 60 * 10)|round(2)|replace({'.':''}) }}</td>

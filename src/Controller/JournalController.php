@@ -54,7 +54,7 @@ class JournalController extends AbstractController
     public function index(JournalEntryRepository $journalEntryRepository, Request $request): Response
     {
         $entries = $this->getEntries($request);
-        $form = $this->createForm(JournalEntryFormType::class);
+        $form = $this->createForm(JournalEntryFormType::class, null, ['show_timestamp' => $entries !== self::DEFAULT_ENTRIES]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $newEntry = $form->getData();
@@ -80,7 +80,7 @@ class JournalController extends AbstractController
             return $this->redirectToJournal($request);
         }
 
-        $form = $this->createForm(JournalEntryFormType::class, $entry);
+        $form = $this->createForm(JournalEntryFormType::class, $entry, ['show_timestamp' => $entries !== self::DEFAULT_ENTRIES]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entry = $form->getData();

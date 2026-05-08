@@ -15,6 +15,21 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class JournalController extends AbstractController
 {
+    private const DEFAULT_ENTRIES = 'today';
+    private const ALLOWED_ENTRIES = ['today', 'last', 'archived'];
+
+    private function getEntries(Request $request): string
+    {
+        $entries = $request->query->get('entries', self::DEFAULT_ENTRIES);
+
+        return in_array($entries, self::ALLOWED_ENTRIES, true) ? $entries : self::DEFAULT_ENTRIES;
+    }
+
+    private function redirectToJournal(Request $request): Response
+    {
+        return $this->redirectToRoute('journal', ['entries' => $this->getEntries($request)]);
+    }
+
     private function getJournal(JournalEntryRepository $journalEntryRepository, string $show = 'today'): array
     {
         $journalDateCriteria = new Criteria();
@@ -38,29 +53,31 @@ class JournalController extends AbstractController
     #[Route('/', name: 'journal')]
     public function index(JournalEntryRepository $journalEntryRepository, Request $request): Response
     {
+        $entries = $this->getEntries($request);
         $form = $this->createForm(JournalEntryFormType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $newEntry = $form->getData();
             $newEntry->setTimestamp(new \DateTime('now'));
             $journalEntryRepository->save($newEntry,true);
-            return $this->redirectToRoute('journal');
+            return $this->redirectToJournal($request);
         }
 
         // TODO replace with components!!! or replace form with components and ajax stimulus inserting and editting!
-        $journal = $this->getJournal($journalEntryRepository, $request->get('entries') ?? 'today');
+        $journal = $this->getJournal($journalEntryRepository, $entries);
 
         $env = str_replace('sqlite:///%kernel.project_dir%/var/', '', $_ENV['DATABASE_URL']);
 
-        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal, 'db' => $env]);
+        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal, 'current_entries' => $entries, 'db' => $env]);
     }
 
     #[Route('/edit/{id}', name: 'entry.edit')]
     public function edit(int $id, JournalEntryRepository $journalEntryRepository, Request $request): Response
     {
+        $entries = $this->getEntries($request);
         $entry = $journalEntryRepository->find($id);
         if (!$entry instanceof JournalEntry) {
-            return $this->redirectToRoute('journal');
+            return $this->redirectToJournal($request);
         }
 
         $form = $this->createForm(JournalEntryFormType::class, $entry);
@@ -68,7 +85,7 @@ class JournalController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entry = $form->getData();
             $journalEntryRepository->save($entry,true);
-            return $this->redirectToRoute('journal');
+            return $this->redirectToJournal($request);
         }
 
         // TODO replace with components!!! or replace form with components and ajax stimulus inserting and editting!
@@ -88,11 +105,11 @@ class JournalController extends AbstractController
 //            $journal = $journalEntryRepository->findAll();
 //        }
 
-        $journal = $this->getJournal($journalEntryRepository, $request->get('entries') ?? 'today');
+        $journal = $this->getJournal($journalEntryRepository, $entries);
 
         $env = str_replace('sqlite:///%kernel.project_dir%/var/', '', $_ENV['DATABASE_URL']);
 
-        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal, 'db' => $env]);
+        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal, 'current_entries' => $entries, 'db' => $env]);
     }
 
     // TODO do it with ajax ev symfony stimulus!
@@ -101,11 +118,11 @@ class JournalController extends AbstractController
     {
         $entry = $journalEntryRepository->find($id);
         if (!$entry instanceof JournalEntry) {
-            return $this->redirectToRoute('journal');
+            return $this->redirectToJournal($request);
         }
 
         $entry->setArchived(true);
         $journalEntryRepository->save($entry,true);
-        return $this->redirectToRoute('journal');
+        return $this->redirectToJournal($request);
     }
 }

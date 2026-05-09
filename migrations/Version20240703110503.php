@@ -21,7 +21,7 @@ final class Version20240703110503 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE journal_entry (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, timestamp DATETIME NOT NULL, starting_time TIME DEFAULT NULL, ending_time TIME DEFAULT NULL, customer VARCHAR(20) DEFAULT NULL, note VARCHAR(255) DEFAULT NULL, archived BOOLEAN NOT NULL)');
-        $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles CLOB NOT NULL -- (DC2Type:json)
+        $this->addSql('CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles CLOB NOT NULL --(DC2Type:json)
         , password VARCHAR(255) NOT NULL)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON user (email)');
     }

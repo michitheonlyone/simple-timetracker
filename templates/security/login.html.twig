@@ -18,6 +18,12 @@
     <label for="inputPassword">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
+    <label for="view">View</label>
+    <select name="view" id="view" class="form-control mb-3">
+        <option value="desktop">Desktop</option>
+        <option value="mobile">Mobile</option>
+    </select>
+
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
     >

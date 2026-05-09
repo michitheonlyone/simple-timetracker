@@ -50,9 +50,20 @@ class JournalController extends AbstractController
         return $journalEntryRepository->matching($journalDateCriteria)->toArray();
     }
 
+    private function resolveView(Request $request): string
+    {
+        $view = $request->query->get('view');
+        if ($view && in_array($view, ['desktop', 'mobile'])) {
+            $request->getSession()->set('view', $view);
+        }
+        return $request->getSession()->get('view', 'desktop');
+    }
+
     #[Route('/', name: 'journal')]
     public function index(JournalEntryRepository $journalEntryRepository, Request $request): Response
     {
+        $view = $this->resolveView($request);
+
         $entries = $this->getEntries($request);
         $form = $this->createForm(JournalEntryFormType::class, null, ['show_timestamp' => $entries !== self::DEFAULT_ENTRIES]);
         $form->handleRequest($request);
@@ -68,12 +79,16 @@ class JournalController extends AbstractController
 
         $env = str_replace('sqlite:///%kernel.project_dir%/var/', '', $_ENV['DATABASE_URL']);
 
-        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal, 'current_entries' => $entries, 'db' => $env]);
+        $template = $view === 'mobile' ? 'journal_mobile.html.twig' : 'journal.html.twig';
+
+        return $this->render($template, ['journal_entry_form' => $form, 'journal_entries' => $journal, 'current_entries' => $entries, 'db' => $env, 'view' => $view]);
     }
 
     #[Route('/edit/{id}', name: 'entry.edit')]
     public function edit(int $id, JournalEntryRepository $journalEntryRepository, Request $request): Response
     {
+        $view = $this->resolveView($request);
+
         $entries = $this->getEntries($request);
         $entry = $journalEntryRepository->find($id);
         if (!$entry instanceof JournalEntry) {
@@ -109,7 +124,9 @@ class JournalController extends AbstractController
 
         $env = str_replace('sqlite:///%kernel.project_dir%/var/', '', $_ENV['DATABASE_URL']);
 
-        return $this->render('journal.html.twig', ['journal_entry_form' => $form, 'journal_entries' => $journal, 'current_entries' => $entries, 'db' => $env]);
+        $template = $view === 'mobile' ? 'journal_mobile.html.twig' : 'journal.html.twig';
+
+        return $this->render($template, ['journal_entry_form' => $form, 'journal_entries' => $journal, 'current_entries' => $entries, 'db' => $env, 'view' => $view]);
     }
 
     // TODO do it with ajax ev symfony stimulus!

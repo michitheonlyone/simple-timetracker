@@ -58,15 +58,15 @@
             <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
                 <div>
                     <a href="{{ path('journal', {'entries': 'today'}) }}" class="btn {{ current_entries == 'today' ? 'btn-success' : 'btn-outline-success' }} btn-sm">Today</a>
-                    <a href="{{ path('journal', {'entries': 'last'}) }}" class="btn {{ current_entries == 'last' ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">Latest (Open)</a>
-                    <a href="{{ path('journal', {'entries': 'archived'}) }}" class="btn {{ current_entries == 'archived' ? 'btn-warning' : 'btn-outline-warning' }} btn-sm">All (Archived)</a>
+                    <a href="{{ path('journal', {'entries': 'last'}) }}" class="btn {{ current_entries == 'last' ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">Open</a>
+                    <a href="{{ path('journal', {'entries': 'archived'}) }}" class="btn {{ current_entries == 'archived' ? 'btn-warning' : 'btn-outline-warning' }} btn-sm">All</a>
                 </div>
                 <div>
                     <a href="{{ path('journal') }}" class="btn btn-primary btn-sm mx-1">Journal</a>
                     <a href="{{ path('todo.list', {'status': 'open'}) }}" class="btn btn-outline-primary btn-sm mx-1">Todos</a>
                 </div>
                 <div>
-                    <a href="{{ app.request.requestUri ~ (app.request.requestUri matches '/\\?/' ? '&' : '?') ~ 'view=desktop' }}" class="btn btn-outline-secondary btn-sm">Desktop View</a>
+                    <a href="{{ app.request.requestUri ~ (app.request.requestUri matches '/\\?/' ? '&' : '?') ~ 'view=desktop' }}" class="btn btn-outline-secondary btn-sm">Desktop</a>
                 </div>
             </div>
             <div class="card p-3 my-3">
